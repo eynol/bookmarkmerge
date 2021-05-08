@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "Merge chrome  bookmarks",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "d3": "^6.7.0"
+  },
   "devDependencies": {
     "netscape-bookmark-tree": "^1.0.1",
     "parcel-bundler": "^1.12.5",
-    "parcel-plugin-svelte": "^4.0.6",
+    "parcel-plugin-svelte": "^4.0.8",
     "svelte": "^3.38.2"
   },
   "scripts": {
@@ -21,6 +23,9 @@
   },
   "keywords": [
     "bookmark"
+  ],
+  "browserslist": [
+    "since 2017-06"
   ],
   "author": "Kai Tao",
   "license": "ISC",
