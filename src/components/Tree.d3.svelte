@@ -16,14 +16,14 @@
             children: fileData[0].result,
         };
         console.log(data);
-        let dy = document.body.scrollHeight;
-        let dx = 100;
+        let dy = document.body.scrollHeight/4;
+        let dx = 20;
         let width = document.body.scrollWidth;
         let height = 768;
         
 
         let margin = { top: 10, right: 120, bottom: 10, left: 40 };
-        const treeF = tree().nodeSize([100, dy/2]);
+        const treeF = tree().nodeSize([20,50]);
         const diagonal = linkHorizontal()
             .x((d) => d.y)
             .y((d) => d.x);
