@@ -7,9 +7,7 @@
   export let children = [];
   export let href = "";
 
-  beforeUpdate(() => {
-    console.log(name, children);
-  });
+
 </script>
 
 {#if href}
@@ -19,9 +17,9 @@
 {/if}
 {#if children && children.length}
   <ul>
-    {#each children as item}
+    {#each children as {name,children,href}}
       <li>
-        <svelte:self {...item} />
+        <svelte:self {name} {children} {href} />
       </li>
     {/each}
   </ul>

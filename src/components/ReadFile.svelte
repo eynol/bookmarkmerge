@@ -13,10 +13,11 @@
 
       textResults = textResults
         .map((item) => {
-          item.result = bookmark(item.text);
+        	console.log('bookmaring',item.name)
+          item.children = bookmark(item.text);
           return item;
         })
-        .filter((item) => !!item.result);
+        .filter((item) => !!item.children);
 
       files.update((list) => {
         const names = textResults.map((x) => x.name).filter(Boolean);
@@ -34,8 +35,15 @@
   async function readAsText(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () =>
-        resolve({ name: file.name.trim(), text: reader.result });
+      reader.onload = () =>{
+      	
+      	let text = reader.result;
+      	let index = 0;
+      	
+       text = 	text.replace(/><\/A>/gim, ()=>`>(blank${index++})</A>`);
+      	console.log(index,text)
+        resolve({ name: file.name.trim(), text:text });
+      }
       reader.onerror = reject;
       reader.readAsText(file);
     });
