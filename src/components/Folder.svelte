@@ -1,23 +1,31 @@
 <svelte:options immutable={true} />
 
 <script>
-  import { afterUpdate, beforeUpdate } from "svelte";
-
+  import FolderOpen from "../img/folder.open.svg.svelte";
+  import FolderClose from "../img/folder.close.svg.svelte";
+  import FileIcon from "../img/file.svg.svelte";
   export let name = "";
   export let children = [];
   export let href = "";
 
-
+  export let open = false;
+  function toggle() {
+    open = !open;
+  }
 </script>
 
 {#if href}
-  <a href={href}>{name}</a>
+  <div><FileIcon />&nbsp;<a {href} target="_blank">{name}</a></div>
 {:else}
-  <span>({name})</span>
+  <div on:click={toggle}>
+    <svelte:component this={open ? FolderOpen : FolderClose} />
+    &nbsp;
+    <span>{name}</span>
+  </div>
 {/if}
-{#if children && children.length}
+{#if children && children.length && open}
   <ul>
-    {#each children as {name,children,href}}
+    {#each children as { name, children, href }}
       <li>
         <svelte:self {name} {children} {href} />
       </li>
@@ -25,11 +33,16 @@
   </ul>
 {/if}
 
-
 <style>
-    ul{
-        list-style: none;
-        padding: 0.2em 0 0 0.5em;
-        margin: 0 0 0 0.5em;
-    }
+  ul {
+    list-style: none;
+    padding: 0.2em 0 0 0.5em;
+    margin: 0 0 0 0.5em;
+    border-left: solid 1px black;
+  }
+  div {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+  }
 </style>

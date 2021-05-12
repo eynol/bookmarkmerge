@@ -7,13 +7,14 @@
   function handleRead({ detail: { children } }) {
     console.log("xx", children);
   }
- 
+
+
 //   import { debug } from "_svelte@3.38.2@svelte/internal";
   //   debug($files);
 </script>
 
 
 <ReadFile on:read={handleRead} />
-<ListFiles />
-<Folder {...$workingTree||{}} />
+<br />
+<Folder open {...$workingTree||{}} />
 

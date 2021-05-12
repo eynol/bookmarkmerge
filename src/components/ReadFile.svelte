@@ -1,5 +1,5 @@
 <script>
-  import { files } from "../stores/app";
+  import { files, workingTree } from "../stores/app";
 
   import bookmark from "netscape-bookmark-tree/dist/bookmark.esm";
 
@@ -51,6 +51,7 @@
 </script>
 
 <xy-button on:click={fileInput.click()}>Import Bookmark Files</xy-button>
+<xy-button on:click={console.log($workingTree)}>Log working tree</xy-button>
 <input
   hidden
   type="file"

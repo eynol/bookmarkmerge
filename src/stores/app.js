@@ -1,6 +1,6 @@
-import { writable } from 'svelte/store'
+import { writable, derived } from 'svelte/store'
 
-export const files  = writable([])
+export const files = writable([])
 
 const getDefaultWorkingTree = ()=>({
 	name:'root',
