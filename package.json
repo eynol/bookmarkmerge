@@ -4,7 +4,8 @@
   "description": "Merge chrome  bookmarks",
   "main": "index.js",
   "dependencies": {
-    "d3": "^6.7.0"
+    "d3": "^6.7.0",
+    "gh-pages": "^3.1.0"
   },
   "devDependencies": {
     "netscape-bookmark-tree": "^1.0.1",
@@ -16,7 +17,8 @@
     "dev": "parcel src/index.html --hmr-port 1424",
     "serve": "parcel serve src/index.html",
     "build": "parcel build src/index.html",
-    "test": "npm run test"
+    "test": "npm run test",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
