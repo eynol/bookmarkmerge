@@ -24,13 +24,21 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+        
+      - name: Config git user
+        run: |
+          git config --global user.name "github-action"
       # Runs a single command using the runners shell
       - name: Install npm modules
         run: npm i
-
+  
       # Runs a set of commands using the runners shell
-      - name: Build && Deploy
+      - name: Build
         run: |
           npm run build-github
-          npm run deploy
+      
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
