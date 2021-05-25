@@ -1,4 +1,4 @@
-import { writable, derived } from 'svelte/store'
+import { writable, derived, get } from 'svelte/store'
 
 export const files = writable([])
 
@@ -72,7 +72,7 @@ export function mergeTwoTree(treeA, treeB) {
 			}
 
 		})
-
+		XyMessage.info("Merged tree success");
 	}
 	console.groupEnd()
 
@@ -82,4 +82,86 @@ function updateModified(root) {
 	const now = Math.floor(Date.now() / 1000);
 
 	root.last_modified = now.toString()
+}
+
+export const mergeGroupIds = writable([]);
+mergeGroupIds.subscribe(nextList => {
+	if (nextList.length === 2) {
+		console.log('going to merge')
+		const srcPath = nextList[0].slice();
+		const destPath = nextList[1].slice();
+
+		if (srcPath.join('') === destPath.join('')) {
+			XyMessage.error('Same node');
+			mergeGroupIds.set([])
+			return
+		}
+
+
+		const root = get(workingTree)
+		const srcTarget = findNodeByPath(root, srcPath.slice(1))
+
+		const destTarget = findNodeByPath(root, destPath.slice(1))
+
+
+		// merge two tree
+		mergeTwoTree(destTarget, srcTarget);
+
+		destTarget.children = destTarget.children.slice()
+		srcTarget.children = []
+
+		// delete src target 
+		const srcParentPath = srcPath.slice(1);
+		srcParentPath.pop();
+		const srcParent = findNodeByPath(root, srcParentPath.slice())
+		const srcTargetIndex = srcParent.children.findIndex(x => x.name === srcTarget.name)
+		srcParent.children = [
+			...srcParent.children.slice(0, srcTargetIndex),
+			...srcParent.children.slice(srcTargetIndex + 1)
+		];
+
+		// touch update
+		updateNodeByPath(root, srcPath.slice(1))
+		updateNodeByPath(root, destPath.slice(1))
+		console.log(srcPath, destPath, srcTarget, destTarget)
+
+		workingTree.set({ ...root })
+		mergeGroupIds.set([])
+	}
+})
+
+function findNodeByPath(node, path = []) {
+	if (!node) {
+		return null;
+	}
+	if (path.length) {
+		let name = path.shift();
+		let target = node.children.find(x => x.name === name);
+
+		if (target) {
+			return findNodeByPath(target, path)
+		}
+
+	}
+	return node
+}
+function updateNodeByPath(node, path = []) {
+	if (!node) {
+		return null;
+	}
+	if (path.length) {
+		let name = path.shift();
+		let targetIndex = node.children.findIndex(x => x.name === name);
+
+		if (targetIndex > -1) {
+			node.children = [
+				...node.children.slice(0, targetIndex),
+				updateNodeByPath(node.children[targetIndex], path),
+				...node.children.slice(targetIndex + 1)
+			]
+			return node
+		}
+
+	}
+	return node
 }
