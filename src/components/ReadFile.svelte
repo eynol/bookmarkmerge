@@ -1,62 +1,62 @@
-<script>
-  import { files, workingTree } from "../stores/app";
+<script type="ts">
+	import { files, type BookmarkFileTree } from '../stores/app';
+	import { Button } from 'carbon-components-svelte';
+	// @ts-ignore
+	import bookmark from 'netscape-bookmark-tree';
 
-  import bookmark from "netscape-bookmark-tree/dist/bookmark.esm";
+	let fileInput: HTMLInputElement;
+	let handleClick = () => {
+		fileInput.click();
+	};
 
-  console.log(files);
-  let fileInput;
-  async function onSelectFiles(e) {
-    if (fileInput.files.length) {
-      // Selected some files
-      const { files: fileList } = fileInput;
-      let textResults = await Promise.all([].map.call(fileList, readAsText));
+	async function onSelectFiles(e) {
+		if (fileInput.files && fileInput.files.length) {
+			// Selected some files
+			const { files: fileList } = fileInput;
+			let textResults = await Promise.all(Array.from(fileList).map(readAsText));
 
-      textResults = textResults
-        .map((item) => {
-          console.time("bookmaring " + item.name);
-         
-          item.children = bookmark(item.text);
-          console.timeEnd("bookmaring " + item.name);
-          return item;
-        })
-        .filter((item) => !!item.children);
+			textResults = textResults
+				.map((item) => {
+					console.time('bookmaring ' + item.name);
 
-      files.update((list) => {
-        const names = textResults.map((x) => x.name).filter(Boolean);
+					item.children = bookmark(item.text);
+					console.timeEnd('bookmaring ' + item.name);
+					return item;
+				})
+				.filter((item) => !!item.children);
 
-        const oldList = list.filter((item) => !names.includes(item.name));
-        return oldList.concat(textResults);
-      });
-      //
-      console.log(textResults);
-    }
-    // restore to default value
-    fileInput.value = "";
-  }
+			// update files with same name
 
-  async function readAsText(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        let text = reader.result;
-        let index = 0;
+			//
+			files.update((list) => {
+				const names = textResults.map((x) => x.name).filter(Boolean);
+				// remove old files
+				const oldList = list.filter((item) => !names.includes(item.name));
+				// append selected files
+				return oldList.concat(textResults);
+			});
+			//
+			console.log({ textResults });
+		}
+		// restore to default value
+		fileInput.value = '';
+	}
 
-        text = text.replace(/><\/A>/gim, () => `>(blank${index++})</A>`);
-        resolve({ name: file.name.trim(), text: text });
-      };
-      reader.onerror = reject;
-      reader.readAsText(file);
-    });
-  }
+	async function readAsText(file: File): Promise<BookmarkFileTree> {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => {
+				let text = reader.result as string;
+				let index = 0;
+
+				text = text.replace(/><\/A>/gim, () => `>(blank${index++})</A>`);
+				resolve({ name: file.name.trim(), text: text });
+			};
+			reader.onerror = reject;
+			reader.readAsText(file);
+		});
+	}
 </script>
 
-<xy-button on:click={fileInput.click()}>Import Bookmark Files</xy-button>
-<xy-button on:click={console.log($workingTree)}>Log working tree</xy-button>
-<input
-  hidden
-  type="file"
-  multiple
-  accept=".html"
-  bind:this={fileInput}
-  on:change={onSelectFiles}
-/>
+<Button on:click={handleClick}>Import Bookmark Files Into Workspace</Button>
+<input hidden type="file" multiple accept=".html" bind:this={fileInput} on:change={onSelectFiles} />

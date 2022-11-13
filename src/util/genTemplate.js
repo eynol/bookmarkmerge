@@ -22,7 +22,7 @@ const listItem = (item, indent = '') => item.href
 ${indent}<DT><A ${listProperty(item)}>${item.name}</A>`
     : `\
 ${indent}<DT><H3 ${listProperty(item)}>${item.name}</H3>
-${walkChildren(item, indent + INDENT)}`;
+${item.children ? walkChildren(item, indent + INDENT) : ''}`;
 
 const listProperty = (item) => Object
     .keys(item)
