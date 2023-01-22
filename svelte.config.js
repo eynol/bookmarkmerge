@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
 import preprocess from 'svelte-preprocess';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -8,7 +8,17 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		paths: {
+			// assets: '/memento-sveltekit-and-github-pages',
+			// base: '/bookmarkmerge'
+		},
+		prerender: {
+			crawl: true,
+			enabled: true,
+			// onError: 'continue',
+			// default: true
+		},
 	}
 };
 
