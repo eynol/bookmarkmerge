@@ -10,6 +10,7 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		paths: {
+			base: process.env.NODE_ENV === "production" ? "/bookmarkmerge" : "",
 			// assets: '/memento-sveltekit-and-github-pages',
 			// base: '/bookmarkmerge'
 		},
