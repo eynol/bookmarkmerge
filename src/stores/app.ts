@@ -327,8 +327,23 @@ export function exportJSON() {
 
 	const destTarget = findNodeByPath(targetRoot, targetPaths.slice(1))
 
+	function transform(node: BookmarkNode | BookmarkFileTree): any {
+		if (node) {
+			if ('href' in node) {
+				return {
+					title: node.name,
+					url: node.href
+				}
+			} else if (node.children) {
+				return {
+					title: node.name,
+					children: node.children.map(transform)
+				}
+			}
+		}
+	}
 
-	download('bookmark.json', JSON.stringify(destTarget, null, 2))
+	download('bookmark.json', JSON.stringify(transform(destTarget), null, 2))
 
 }
 export function exportHTML() {
